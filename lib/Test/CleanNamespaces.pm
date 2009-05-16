@@ -2,6 +2,7 @@ use strict;
 use warnings;
 
 package Test::CleanNamespaces;
+# ABSTRACT: Check for uncleaned imports
 
 use Class::MOP;
 use Sub::Name 'subname';
