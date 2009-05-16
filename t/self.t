@@ -1,4 +1,5 @@
-use Test::More tests => 1;
+use strict;
+use warnings;
 use Test::CleanNamespaces;
 
-namespaces_clean('Test::CleanNamespaces');
+all_namespaces_clean;
