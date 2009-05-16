@@ -71,7 +71,9 @@ sub build_all_namespaces_clean {
 sub find_modules {
     my ($class) = @_;
     my @modules = map {
-        s/^b?lib.//;
+        /^blib/
+            ? s/^blib.(?:lib|arch).//
+            : s/^lib.//;
         s/\.pm$//;
         join '::' => splitdir($_);
     } File::Find::Rule->perl_module->in(-e 'blib' ? 'blib' : 'lib');
