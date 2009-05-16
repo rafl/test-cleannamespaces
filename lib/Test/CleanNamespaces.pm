@@ -5,13 +5,19 @@ package Test::CleanNamespaces;
 
 use Class::MOP;
 use Sub::Name 'subname';
+use File::Find::Rule;
+use File::Find::Rule::Perl;
+use File::Spec::Functions 'splitdir';
 use namespace::autoclean;
 
 use Sub::Exporter -setup => {
     exports => [
-        namespaces_clean => \&build_namespaces_clean,
+        namespaces_clean     => \&build_namespaces_clean,
+        all_namespaces_clean => \&build_all_namespaces_clean,
     ],
-    groups => { default => ['namespaces_clean'] },
+    groups => {
+        default => [qw/namespaces_clean all_namespaces_clean/],
+    },
 };
 
 BEGIN {
@@ -26,14 +32,14 @@ BEGIN {
 }
 
 sub build_namespaces_clean {
-    my ($class, $name, $arg) = @_;
+    my ($class, $name) = @_;
     return sub {
         my (@namespaces) = @_;
         local $@;
 
         for my $ns (@namespaces) {
             unless (eval { Class::MOP::load_class($ns); 1 }) {
-                $class->builder->ok(0, "failed to load ${ns}: $@");
+                $class->builder->skip("failed to load ${ns}: $@");
                 next;
             }
 
@@ -48,6 +54,25 @@ sub build_namespaces_clean {
             ) if @imports;
         }
     };
+}
+
+sub build_all_namespaces_clean {
+    my ($class, $name) = @_;
+    my $namespaces_clean = $class->build_namespaces_clean($name);
+    return sub {
+        my @modules = $class->find_modules(@_);
+        $namespaces_clean->(@modules);
+    };
+}
+
+sub find_modules {
+    my ($class) = @_;
+    my @modules = map {
+        s/^b?lib.//;
+        s/\.pm$//;
+        join '::' => splitdir($_);
+    } File::Find::Rule->perl_module->in(-e 'blib' ? 'blib' : 'lib');
+    return @modules;
 }
 
 1;
