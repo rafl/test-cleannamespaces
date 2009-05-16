@@ -5,6 +5,7 @@ package Test::CleanNamespaces;
 
 use Class::MOP;
 use Sub::Name 'subname';
+use Test::Builder;
 use File::Find::Rule;
 use File::Find::Rule::Perl;
 use File::Spec::Functions 'splitdir';
