@@ -62,6 +62,7 @@ sub build_all_namespaces_clean {
     my $namespaces_clean = $class->build_namespaces_clean($name);
     return sub {
         my @modules = $class->find_modules(@_);
+        $class->builder->plan(tests => scalar @modules);
         $namespaces_clean->(@modules);
     };
 }
