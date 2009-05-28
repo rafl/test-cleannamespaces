@@ -1,2 +1,5 @@
+0.02  Thu, 28 May 2009 06:05:26 +0200
+  * Declare dependency on Test::Tester.
+
 0.01  Sat, 16 May 2009 18:32:11 +0200
   * Initial release.
