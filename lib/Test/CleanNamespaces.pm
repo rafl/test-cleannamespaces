@@ -86,7 +86,7 @@ sub build_namespaces_clean {
             }
 
             my $meta = Class::MOP::class_of($ns) || Class::MOP::Class->initialize($ns);
-            my %methods = map { ($_ => 1) } keys %{ $meta->get_method_map || {} };
+            my %methods = map { ($_ => 1) } $meta->get_method_list;
             my @symbols = keys %{ $meta->get_all_package_symbols('CODE') || {} };
             my @imports = grep { !$methods{$_} } @symbols;
 
